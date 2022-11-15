@@ -1,11 +1,12 @@
 
 class productos{
-    constructor(id,nombre,precio,stock){
-        this.id = id,
-        this.nombre=nombre,
-        this.precio=precio,
-        this.stock=stock,
-        this.destacado=1
+    constructor(id,nombre,precio,stock,cantidad){
+        this.id = id;
+        this.nombre=nombre;
+        this.precio=precio;
+        this.stock=stock;
+        this.destacado=1;
+        this.cantidad = cantidad; 
     }
    
 }

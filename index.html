@@ -10,8 +10,8 @@
 </head>
 <body>
     <header>
-        <div class="conainer"><h1>carrito</h1></div>
-        <div><p>elementos carrito</p></div>
+        <div class="conainer"><h1>Simulador de Tienda</h1></div>
+        <button class="button" onclick="iniciar()">Iniciar programa</button>
         <hr>
         
     </header>
@@ -25,10 +25,26 @@
             
         </ul>
     </div>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Precio individual</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio Total</th>
+            </tr>
+        </thead>
+        <tbody id="body_carrito">
 
-    <a href="login.html">volver</a>
+        </tbody>
+
+    </table>
+    <button type="button" onclick="vaciarCarrito()" >vaciar carrito</button>
+    <a href="login.html">Cambiar de Usuario</a>
     
     <script src="js/clases.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
+
