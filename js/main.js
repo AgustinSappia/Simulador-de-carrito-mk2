@@ -6,10 +6,10 @@ let a=false;
 let productosAgregados = [];
 let carrito = [];
 let usuario = [];
+let productosArray = [];
 let u;
 
-
-detectarPagina();
+setTimeout(detectarPagina(),1000);
 
 
 
@@ -72,15 +72,22 @@ function registrar (){
   }
   
   function registrar_Producto(){
-    u = sessionStorage.length;
     idNuevoProducto = document.getElementById("nombre-nuevo-producto").value;
     idPrecioProducto = document.getElementById("precio-nuevo-producto").value;
     idStockProducto = document.getElementById("stock-nuevo-producto").value;
-    producto = new productos(u,idNuevoProducto,idPrecioProducto,idStockProducto);
-    productoJson = JSON.stringify(producto);
-    sessionStorage.setItem( u,productoJson);
-    u++;
-    //productosAgregados.push(producto);
+    if (sessionStorage.getItem(0)===null){
+      producto = new productos(productosArray.length,idNuevoProducto,idPrecioProducto,idStockProducto);
+      productosArray.push(producto);
+      sendProductosSession(productosArray,0);
+    }
+    else{
+      jsonP = sessionStorage.getItem("0");
+      productosArray = JSON.parse(jsonP);
+      producto = new productos(productosArray.length,idNuevoProducto,idPrecioProducto,idStockProducto);
+      productosArray.push(producto);
+      sendProductosSession(productosArray,0);
+    }
+   
     
     mostrarProductos();
     
@@ -89,44 +96,69 @@ function registrar (){
   function mostrarProductos(){
     let ulDeProductos = document.getElementById("lista_objetos_ul");
     ulDeProductos.innerHTML = "";
-    
-    for (i=1;i<sessionStorage.length;i++){   
+    productosJsonSession = sessionStorage.getItem("0");
+    productosSession = JSON.parse(productosJsonSession);
+    productosSession.forEach (elemento => {
+
       
-      let elementoP = sessionStorage.getItem(i);
-      if (elementoP === null){
+
+      if (elemento.nombre === null){
         console.log("Hay un elemento faltante");
-        arreglarProblema(i,sessionStorage.length);
         
       }
       else{
+        if(parametro.admin === 1){
+
+          let liProd = document.createElement("li");
+          liProd.setAttribute("id","row_"+elemento.id);
+          liProd.innerHTML = `<div"><h3 class="nombre">${elemento.nombre}</h3></div>
+          <div><p class="precio" >precio: ${elemento.precio}</p></div>
+          <div><p class="stock">stock: ${elemento.stock}</p></div>
+          <div class="id"><p>id: ${elemento.id}</p></div>
+          <button type="button" id="addCarrito" onclick="addCarrito(${elemento.id})">añadir al Carrito</button>
+          <button type="button" id="removeCarrito" onclick="removeObjeto(${elemento.id})">Eliminar</button>`
+          ulDeProductos.appendChild(liProd);
+        }
+        else{
+          let liProd = document.createElement("li");
+          liProd.setAttribute("id","row_"+elemento.id);
+          liProd.innerHTML = `<div"><h3 class="nombre">${elemento.nombre}</h3></div>
+          <div><p class="precio" >precio: ${elemento.precio}</p></div>
+          <div><p class="stock">stock: ${elemento.stock}</p></div>
+          <div class="id"><p>id: ${elemento.id}</p></div>
+          <button type="button" id="addCarrito" onclick="addCarrito(${elemento.id})">añadir al Carrito</button>`
+          ulDeProductos.appendChild(liProd);
+        }
         
-        let elementoPTransformado = JSON.parse(elementoP);
-        let liProd = document.createElement("li");
-        liProd.setAttribute("id","row_"+elementoPTransformado.id);
-        liProd.innerHTML = `<div"><h3 class="nombre">${elementoPTransformado.nombre}</h3></div>
-        <div><p class="precio" >precio: ${elementoPTransformado.precio}</p></div>
-        <div><p class="stock">stock: ${elementoPTransformado.stock}</p></div>
-        <div class="id"><p>id: ${elementoPTransformado.id}</p></div>
-        <button type="button" id="addCarrito" onclick="addCarrito(${elementoPTransformado.id})">añadir al Carrito</button>`
-        ulDeProductos.appendChild(liProd);
       }
-    }
+     })
+  }    
+    
+  function removeObjeto(id){
+    productosJsonSession = sessionStorage.getItem("0"); //recibo el array del session storage
+    productosSession = JSON.parse(productosJsonSession);
+    elemento = document.getElementById("row_"+id);
+    elemento.remove();                //elimino el objeto del html
+    productosSession.splice(id,1);    //elimino el objeto del array
+    productosSession = arreglarId(productosSession,id); //LAS ID QUEDAN DESPLAZADAS Y CON ESTA FUNCION LAS CORRIJO
+    sendProductosSession (productosSession,0);
+    mostrarProductos();
   }
-  
-  function arreglarProblema(){  //Lo que hace es acomodar las key en el session storage cuando se elimina un objeto
-    for (x=1;x<sessionStorage.length;x++){    //x hace referencia al la key actual e "y" hace referencia al largo del session storage
-      elementoP = sessionStorage.getItem(x);
-      objeto = JSON.parse(elementoP);
-      objeto.id = x;
-      elementoP = JSON.stringify(objeto);
-      sessionStorage.setItem(x,elementoP);
-    }
-  } 
+
+  function sendProductosSession (array,id){
+    arrayJson = JSON.stringify(array);
+    sessionStorage.setItem(id,arrayJson);
+  }
   
   function addCarrito(id){        //escanea los datos del producto seleccionado y los convierte en un objeto
   
     elemento = document.getElementById("row_"+id);
     divCarrito = document.getElementById("body_carrito");
+    productosArray = JSON.parse(sessionStorage.getItem(0));
+    prod = productosArray[id];
+    prod.stock--;
+    sendProductosSession(productosArray,0);
+    mostrarProductos(); 
     let producto = new productos(id,
       elemento.querySelector(".nombre").textContent,
       elemento.querySelector(".precio").textContent.substring(8,11)
@@ -134,6 +166,7 @@ function registrar (){
       mandarCarrito(producto);   
     } 
     function mandarCarrito(producto){ //detecta si el producto ya esta en el carrito. en el caso afirmativo aumenta la variable "cantidad" en 1 del objeto. en el caso negativo agrega el objeto al array "carrito" y cambia la variable "cantidad" a 1
+
       if (carrito.some(element => element.id === producto.id)){
         productoYaAgregado = carrito.find(element => element.id === producto.id);
         productoYaAgregado.cantidad++;
@@ -195,14 +228,13 @@ function registrar (){
       <td><h4>${c}</h4></td>  `;
       body.appendChild(elemento);
     }
-    function detectarPagina(){   //detecta si estamos posicionado en el index para recien ahi ejecutar las funciones 
-      if (window.location.href==="http://127.0.0.1:5500/index.html"){
+    async function detectarPagina(){   //detecta si estamos posicionado en el index para recien ahi ejecutar las funciones 
         detectarAdmin();
         mostrarProductos();
         recuperarCarrito();
         actualizarCarrito();
         detectarElementosEnCarrito();
-      }
+      
     }
 
     function recuperarCarrito(){
@@ -230,6 +262,15 @@ function registrar (){
       recuperarCarrito();
       actualizarCarrito();
       detectarElementosEnCarrito();
+    }
+
+
+    function arreglarId(array,id){
+      for(let i=id;i<array.length;i++){
+        elemento = array[i];
+        elemento.id = elemento.id - 1;
+      }
+      return array;
     }
 
   //  function enviarAdataJson(arrayJson){
