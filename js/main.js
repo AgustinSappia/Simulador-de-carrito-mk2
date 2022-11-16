@@ -1,7 +1,7 @@
 
 let admin1 = new Usuarios("rayo","123");
 let userStorage = [];
-let contU= 2;
+let contU;
 let a=false;
 let productosAgregados = [];
 let carrito = [];
@@ -9,7 +9,8 @@ let usuario = [];
 let productosArray = [];
 let u;
 
-setTimeout(detectarPagina(),1000);
+  iniciar();
+
 
 
 
@@ -19,20 +20,23 @@ function verificacion(){
   localStorage.setItem(0,""); //reservo el lugar para el usuario conectado
   let usuarioIngresado = document.getElementById("usuario").value;
   let contraseniaIngresada = document.getElementById("pass").value;  
-  
-  for(let i=2; a !=true && i<localStorage.length;i++){ //la posicion 0 esta reservada para el carrito y la 1 para el usuario en linea
-    let comparado = localStorage.getItem(i);
-    objeto = JSON.parse(comparado);
-    if( usuarioIngresado === objeto.nombre && contraseniaIngresada === objeto.contraseña){
-      alert("Bienvenido");
-      a=true;
+  userStorage = JSON.parse(localStorage.getItem(3));
+  contU=0;
+  userStorage.forEach(usuario => {
+    if( usuarioIngresado === usuario.nombre && contraseniaIngresada === usuario.contraseña){
+      debugger
+      localStorage.setItem(0,JSON.stringify(usuario));
+      setTimeout(detectarPagina(),2000);
       window.location="index.html";
-      localStorage.setItem("0", comparado); //reservo la posicion 0 para el usuario que está en linea
     }
-  }
-  if(a != true){
-    alert("ingreso algun dato mal")
-  }
+    else{
+      contU++;
+      if(contU===userStorage.length){
+        alert("ingreso algun dato mal");
+      }
+    }
+  })
+
 }
 
 function registrar (){
@@ -46,9 +50,19 @@ function registrar (){
   else{
     persona.admin = 0;
   }
-  persona = JSON.stringify(persona);
-    localStorage.setItem(contU,persona);
-    contU++;
+  
+  if(localStorage.getItem(3)===null){
+  userStorage.push(persona);
+  userStorageJson = JSON.stringify(userStorage);
+  localStorage.setItem(3,userStorageJson);   
+  }
+  else{
+    userStorage = JSON.parse(localStorage.getItem(3));
+    userStorage.push(persona);
+    userStorageJson = JSON.stringify(userStorage);
+    localStorage.setItem(3,userStorageJson);   
+  }
+
   }
   
   function detectarAdmin (){
@@ -229,7 +243,8 @@ function registrar (){
       body.appendChild(elemento);
     }
     async function detectarPagina(){   //detecta si estamos posicionado en el index para recien ahi ejecutar las funciones 
-        detectarAdmin();
+        console.log("Asdwd")
+      detectarAdmin();
         mostrarProductos();
         recuperarCarrito();
         actualizarCarrito();
@@ -257,11 +272,14 @@ function registrar (){
       
     }
     function iniciar(){//agregue esta funcion porque la funcion "detectar pagina" no funciona si la ip del ordenador cambia, solo funciona con el live server
-      detectarAdmin();
-      mostrarProductos();
-      recuperarCarrito();
-      actualizarCarrito();
-      detectarElementosEnCarrito();
+      if(document.title==='Carrito'){
+
+        detectarAdmin();
+        mostrarProductos();
+        recuperarCarrito();
+        actualizarCarrito();
+        detectarElementosEnCarrito();
+      }
     }
 
 
@@ -273,16 +291,3 @@ function registrar (){
       return array;
     }
 
-  //  function enviarAdataJson(arrayJson){
-
- //   fetch("/data.json",{method:"POST",
- //                       body: JSON.stringify(arrayJson),
- //                       headers:{"content-type":"aplication/Json;charset=UTF-8",
- //                               },
- //                                     })
- //       .then((Response)=> Response.json())
- //       .then((data)=> console.log(data));
- //       
- //       
- //    
- //}
