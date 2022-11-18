@@ -6,22 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito</title>
     <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karma&display=swap" rel="stylesheet">    
+    <!-- librerias -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
-    <header>
-        <div class="conainer"><h1>carrito</h1></div>
-    </header>
+
     
-    <form action="ingreso">
-        <p>Usuario :</p><input type="text" name="usuario" id="usuario" >
-        <p>Contraseña :</p><input type="password" name="contraseña" id="pass">
-        <button type="button" onclick="verificacion()" id="boton-ingresar" value="ingresar" >ingresar</button>
-        <button type="button" onclick="registrar()" id="boton-registrar">registrar</button>
-    </form>
-    <footer>
-        <br>
-        <div style="border: 1px black solid ; "> <p style="text-align: center ;" > Recuerda al ser administrador se habilitan opciones especiales</p></div>
+    <div class="formularioDiv">
+        
+        <form class="formulario" action="ingreso">
+            <div class="conainer_login"><h1 class="conainer_login">carrito</h1></div>
+            <input class = "inputs" type="text" name="usuario" id="usuario" placeholder="Usuario" >
+            <input class = "inputs" type="password" name="contraseña" id="pass" placeholder="Contraseña">
+            <div class="divBotones">
+
+                <button class="botones" type="button" onclick="verificacion()" id="boton-ingresar" value="ingresar" >ingresar</button>
+                <button class="botones" type="button" onclick="registrar()" id="boton-registrar">registrar</button>
+            </div>
+        </form>
+    </div>
+        <footer>
+        
+        <div  class="footer"> <p style="text-align: center ;" > Recuerda al ser administrador se habilitan opciones especiales</p></div>
     </footer>
 
 

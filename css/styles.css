@@ -1,0 +1,145 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Karma', serif;
+
+}
+/*login.html*/
+.conainer_login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px black solid;
+    margin-top: 10px;
+}
+
+.formulario{
+    margin: auto;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    height: 380px;
+    background-color: aquamarine;
+    border: 1px black solid;
+}
+
+.formularioDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+    
+}
+.inputs{
+    display: block;
+    margin-top: 30px;
+    width: 90%;
+    height: 50px;
+}
+.divBotones{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.botones{
+    width: 40%;
+}
+.footer{
+    display: flex;
+    border: 1px black solid ;
+    margin-top: 30px;
+    background-color: aquamarine;
+    align-items: center;
+    justify-content: center; 
+}
+.footer,p{
+    padding-top: 5px;
+}
+/*Index.html*/
+
+.headerIndex{
+    background-color: aquamarine;
+    text-align: center;
+}
+.registro_objetos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: aquamarine;
+    height: 300px;
+    width: 350px;
+
+}
+
+.contenedorRobjetos{
+    display: flex;
+    justify-content: center;
+}
+
+.inputProductos{
+    width: 90%;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+.botonAgregarObjeto{
+    margin-top: 10px;
+    margin-left: 250px;
+    width: 70px;
+}
+.agregarObjetosTitulo{
+    text-align: center;
+}
+.carrito
+.carritoTitulos{
+    background-color: aquamarine;
+
+}
+.carrito{
+    
+}
+
+.listaObjetos{
+    list-style-type: none;
+}
+body div ul{
+   margin-left: -35px; 
+}
+body div ul li{
+    width: 100%;
+    border-top: 1px solid gray;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    
+    
+}
+
+.nombre{
+    color: aquamarine;
+}
+
+.divBotonesCarrito{
+    display: flex;
+    justify-content: flex-end;
+    width: 85%;
+
+}
+.botonesCarrito{
+    width: 150px;
+    margin: 5px;
+
+}
+
+
+
+
+
+
+
+
