@@ -12,12 +12,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Karma&display=swap" rel="stylesheet">    
-    <!-- librerias -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    
 </head>
 <body>
-
+    
     
     <div class="formularioDiv">
         
@@ -26,19 +24,21 @@
             <input class = "inputs" type="text" name="usuario" id="usuario" placeholder="Usuario" >
             <input class = "inputs" type="password" name="contraseña" id="pass" placeholder="Contraseña">
             <div class="divBotones">
-
+                
                 <button class="botones" type="button" onclick="verificacion()" id="boton-ingresar" value="ingresar" >ingresar</button>
-                <button class="botones" type="button" onclick="registrar()" id="boton-registrar">registrar</button>
+                <button class="botones" type="button" onclick="traerAdminsJson (`registrar`); " id="boton-registrar">registrar</button>
             </div>
         </form>
     </div>
-        <footer>
+    <footer>
         
         <div  class="footer"> <p style="text-align: center ;" > Recuerda al ser administrador se habilitan opciones especiales</p></div>
     </footer>
-
-
-
+    
+    
+    <!-- librerias -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <!-- script -->
     <script src="js/clases.js"></script>
     <script src="js/main.js"></script>
 </body>

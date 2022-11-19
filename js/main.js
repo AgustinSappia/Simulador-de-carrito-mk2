@@ -1,5 +1,4 @@
 
-let admin1 = new Usuarios("rayo","123");
 let userStorage = [];
 let contU;
 let a=false;
@@ -7,7 +6,6 @@ let productosAgregados = [];
 let carrito = [];
 let usuario = [];
 let productosArray = [];
-let u;
 
   iniciar();
 
@@ -16,14 +14,23 @@ let u;
 
 
 function verificacion(){
+
   localStorage.setItem(1,""); // reservo el lugar para el carrito
   localStorage.setItem(0,""); //reservo el lugar para el usuario conectado
   let usuarioIngresado = document.getElementById("usuario").value;
   let contraseniaIngresada = document.getElementById("pass").value; 
   if (localStorage.getItem(3)=== null){
-   traerAdminsJson ();
-   verificacionPT2 ();
+   traerAdminsJson ("ingresar");
   }
+  verificacionPT2();
+
+
+}
+function verificacionPT2 (){ //dividi en dos la veririficacion para meter esta parte dentro de la funcion async "traerAdminJson"
+                            //Lo que hace esta funcion es realizar el login de un usuario 
+  
+  let usuarioIngresado = document.getElementById("usuario").value;
+  let contraseniaIngresada = document.getElementById("pass").value; 
   userStorage = JSON.parse(localStorage.getItem(3));
   contU=0;
   userStorage.forEach(usuario => {
@@ -44,51 +51,58 @@ function verificacion(){
         })
       }
     }
-  })
-
+  });
 }
 
-function registrar (){
-
+function registrar (){  // registra un usuario nuevo
+  
   usuarioIngresado = document.getElementById("usuario").value;
   contraseniaIngresada = document.getElementById("pass").value;
   comparador = detectarUsuariosYaRegistrados(usuarioIngresado); // uso la funcion para saber si ya el usuario ya existe
-  if (comparador===true){       
+  if (comparador===true)  // el comparador me sirve para saber si el usuario registrado ya existe, si es "true" el usuario no existe y se puede proceder a registrar
+  {       
 
     persona = new Usuarios (usuarioIngresado,contraseniaIngresada);
-    Swal.fire({
+    Swal.fire(  //implemento sweet alert para tomar los dato, pd: me volvi loco 
+      {
       title: 'Deseas registrarte como admin?',
       text: '-Prueba ser admin primero-',
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: 'Sip :D',
       denyButtonText: `Nope`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
+      }).then((result) => 
+      {
+      if (result.isConfirmed) 
+      {
         persona.admin=1;
         Swal.fire('Eres admin!', 'Felicidades', 'success')
-        if(localStorage.getItem(3)===null){
+        if(localStorage.getItem(3)===null)  //estas son verificaciones por las dudas, con las modificaciones del codigo muchas quedaron obsoletas mas adelante optimizare todo mejor
+        {                                   
           userStorage.push(persona);
           userStorageJson = JSON.stringify(userStorage);
           localStorage.setItem(3,userStorageJson);   
         }
-        else{
+        else
+        {
           userStorage = JSON.parse(localStorage.getItem(3));
           userStorage.push(persona);
           userStorageJson = JSON.stringify(userStorage);
           localStorage.setItem(3,userStorageJson);   
         }
     
-      } else if (result.isDenied) {
+      } else if (result.isDenied) 
+      {
         persona.admin=0;
         Swal.fire('Ok gustos son gustos', 'prueba ser admin primero', 'info') //copie y pegue dentro del alert una parte de codigo que no se reproducia por se asincronica el alert, en un futuro lo solucionare con promesas
-        if(localStorage.getItem(3)===null){
+        if(localStorage.getItem(3)===null)
+        {
           userStorage.push(persona);
           userStorageJson = JSON.stringify(userStorage);
           localStorage.setItem(3,userStorageJson);   
         }
-        else{
+        else
+        {
           userStorage = JSON.parse(localStorage.getItem(3));
           userStorage.push(persona);
           userStorageJson = JSON.stringify(userStorage);
@@ -96,28 +110,19 @@ function registrar (){
         }
     
       }
-    })
+      })
       
-      if(localStorage.getItem(3)===null){   // pregunta si hay algo en el local storage
 
-        userStorage.push(persona);
-        userStorageJson = JSON.stringify(userStorage);
-        localStorage.setItem(3,userStorageJson);   
-      }
-      else{
-        userStorage = JSON.parse(localStorage.getItem(3));
-        userStorage.push(persona);
-        userStorageJson = JSON.stringify(userStorage);
-        localStorage.setItem(3,userStorageJson);   
-      }
+
   
       
     }
   }
   
-  function detectarAdmin (){
+  function detectarAdmin (){  //detecta si el usuario ingresado es administrador y habilita las funciones 
     parametroEnJson = localStorage.getItem("0");
     parametro = JSON.parse(parametroEnJson);
+    
     const dive = document.getElementById("registro_objetos");
     if (parametro.admin === 1){
       dive.innerHTML = ` 
@@ -135,7 +140,7 @@ function registrar (){
     }
   }
   
-  function registrar_Producto(){
+  function registrar_Producto(){// registra productos nuevos al sistema
     idNuevoProducto = document.getElementById("nombre-nuevo-producto").value;
     idPrecioProducto = document.getElementById("precio-nuevo-producto").value;
     idStockProducto = document.getElementById("stock-nuevo-producto").value;
@@ -153,7 +158,7 @@ function registrar (){
     }
    
     
-    mostrarProductos();
+    mostrarProductos();//muestra los productros dentro del storage
     
   }
   
@@ -198,7 +203,7 @@ function registrar (){
      })
   }    
     
-  function removeObjeto(id){
+  function removeObjeto(id){  //elimina un objeto dentro del storage
     productosJsonSession = sessionStorage.getItem("0"); //recibo el array del session storage
     productosSession = JSON.parse(productosJsonSession);
     elemento = document.getElementById("row_"+id);
@@ -209,12 +214,12 @@ function registrar (){
     mostrarProductos();
   }
 
-  function sendProductosSession (array,id){
+  function sendProductosSession (array,id){//manda arrays al session storage
     arrayJson = JSON.stringify(array);
     sessionStorage.setItem(id,arrayJson);
   }
   
-  function addCarrito(id){        //escanea los datos del producto seleccionado y los convierte en un objeto
+  function addCarrito(id){        //escanea los datos del producto seleccionado y los convierte en un objeto, tambien gestiona el stock 
   
     elemento = document.getElementById("row_"+id);
     divCarrito = document.getElementById("body_carrito");
@@ -250,10 +255,11 @@ function registrar (){
         ObjetoComprado.stock++;
         sessionStorage.setItem(0,JSON.stringify(productosArray));
         actualizarCarrito();
-        detectarElementosEnCarrito();
+        detectarElementosEnCarrito();// esta funcion detecta que elementos ya estan en el carrito y hace funciones a partir de eso
         mostrarProductos();
       } 
-    function mandarCarrito(producto){ //detecta si el producto ya esta en el carrito. en el caso afirmativo aumenta la variable "cantidad" en 1 del objeto. en el caso negativo agrega el objeto al array "carrito" y cambia la variable "cantidad" a 1
+    function mandarCarrito(producto) //detecta si el producto ya esta en el carrito. en el caso afirmativo aumenta la variable "cantidad" en 1 del objeto. en el caso negativo agrega el objeto al array "carrito" y cambia la variable "cantidad" a 1
+    { 
 
       if (carrito.some(element => element.id === producto.id)){
         productoYaAgregado = carrito.find(element => element.id === producto.id);
@@ -344,7 +350,7 @@ function registrar (){
       
     }
 
-    function recuperarCarrito(){
+    function recuperarCarrito(){  //recupera el carrito guardado en el LocalStorage
       if (localStorage.getItem("1")===undefined){
         localStorage.setItem("1","");
       }
@@ -356,7 +362,8 @@ function registrar (){
       }
     }
 
-    function vaciarCarrito(){
+    function vaciarCarrito()//Elimina los elementos que estan en el carrito
+    {
       carrito = [];
       localStorage.setItem("1","");
       divCarrito = document.getElementById("body_carrito");
@@ -374,7 +381,7 @@ function registrar (){
     }
 
 
-    function arreglarId(array,id){
+    function arreglarId(array,id){  //arregla la id de los objetos al eliminar uno, asi no hay saltos al recorrer un array
       for(let i=id;i<array.length;i++){
         elemento = array[i];
         elemento.id = elemento.id - 1;
@@ -383,23 +390,16 @@ function registrar (){
     }
 
     function detectarUsuariosYaRegistrados (nombre){        //sirve para analizar si el usuario ingresado ya existe
-      
-      if (localStorage.getItem(3)===null){
-        return true;
+      userStorage = JSON.parse(localStorage.getItem(3));
+      if (userStorage.filter(elemento => elemento.nombre === nombre).length>0){
+        alert("El nombre de usario ya esta registrado")
+        return false
       }
       else{
-
-        userStorage = JSON.parse(localStorage.getItem(3));
-        if (userStorage.filter(elemento => elemento.nombre === nombre).length>0){
-          alert("El nombre de usario ya esta registrado")
-          return false
-        }
-        else{
-          return true;
-        }
+        return true;
       }
     }
-    function realizar_compra(){
+    function realizar_compra(){ //realiza la compra un pone un alert innecesariamente larga
       
       let timerInterval
       Swal.fire({
@@ -419,7 +419,6 @@ function registrar (){
           clearInterval(timerInterval)
         }
       }).then((result) => {
-        /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
           window.location="Final.html";
         console.log('I was closed by the timer')
@@ -427,17 +426,31 @@ function registrar (){
 })
     }
 
-   async function traerAdminsJson () {
-      urlJson = (`./js/data.json`);
+   async function traerAdminsJson (name) {  // trae los usuarios administradores por defecto del archivo "data.json";"name" hace referencia a el momento en el que se ejecuta la funcion
+      urlJson = (`js/data.json`);
       try{
-        debugger
-        const resultado = await fetch(urlJson);
+        const resultado = await fetch(urlJson,{ method: 'GET',
+        mode: 'no-cors', 
+        cache: 'default'
+     });
         const respuesta = await resultado.json();
         console.log(respuesta) ;
-        localStorage.setItem(3, JSON.stringify(respuesta));
+        if(localStorage.getItem(3)===null){
+          localStorage.setItem(3, JSON.stringify(respuesta));
+        }
+        else{
+          array1 = JSON.parse(localStorage.getItem(3));
+          respuesta.concat(array1); 
+        }
       }
-      catch (respuesta){
-        return respuesta
+      catch (error){
+        console.log(error);
+      }
+      if (name === "ingresar"){
+        verificacionPT2 ();
+      }
+      if (name === "registrar"){
+        registrar ()
       }
 
     }
