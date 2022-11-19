@@ -19,7 +19,11 @@ function verificacion(){
   localStorage.setItem(1,""); // reservo el lugar para el carrito
   localStorage.setItem(0,""); //reservo el lugar para el usuario conectado
   let usuarioIngresado = document.getElementById("usuario").value;
-  let contraseniaIngresada = document.getElementById("pass").value;  
+  let contraseniaIngresada = document.getElementById("pass").value; 
+  if (localStorage.getItem(3)=== null){
+   traerAdminsJson ();
+   verificacionPT2 ();
+  }
   userStorage = JSON.parse(localStorage.getItem(3));
   contU=0;
   userStorage.forEach(usuario => {
@@ -52,28 +56,64 @@ function registrar (){
   if (comparador===true){       
 
     persona = new Usuarios (usuarioIngresado,contraseniaIngresada);
-    respuestaAdmin = confirm("Desea ser admin?")
-    if(respuestaAdmin){
-      persona.admin = 1;
-    }
-    else{
-      persona.admin = 0;
-    }
+    Swal.fire({
+      title: 'Deseas registrarte como admin?',
+      text: '-Prueba ser admin primero-',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Sip :D',
+      denyButtonText: `Nope`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        persona.admin=1;
+        Swal.fire('Eres admin!', 'Felicidades', 'success')
+        if(localStorage.getItem(3)===null){
+          userStorage.push(persona);
+          userStorageJson = JSON.stringify(userStorage);
+          localStorage.setItem(3,userStorageJson);   
+        }
+        else{
+          userStorage = JSON.parse(localStorage.getItem(3));
+          userStorage.push(persona);
+          userStorageJson = JSON.stringify(userStorage);
+          localStorage.setItem(3,userStorageJson);   
+        }
     
-    if(localStorage.getItem(3)===null){
-      userStorage.push(persona);
-      userStorageJson = JSON.stringify(userStorage);
-      localStorage.setItem(3,userStorageJson);   
-    }
-    else{
-      userStorage = JSON.parse(localStorage.getItem(3));
-      userStorage.push(persona);
-      userStorageJson = JSON.stringify(userStorage);
-      localStorage.setItem(3,userStorageJson);   
-    }
+      } else if (result.isDenied) {
+        persona.admin=0;
+        Swal.fire('Ok gustos son gustos', 'prueba ser admin primero', 'info') //copie y pegue dentro del alert una parte de codigo que no se reproducia por se asincronica el alert, en un futuro lo solucionare con promesas
+        if(localStorage.getItem(3)===null){
+          userStorage.push(persona);
+          userStorageJson = JSON.stringify(userStorage);
+          localStorage.setItem(3,userStorageJson);   
+        }
+        else{
+          userStorage = JSON.parse(localStorage.getItem(3));
+          userStorage.push(persona);
+          userStorageJson = JSON.stringify(userStorage);
+          localStorage.setItem(3,userStorageJson);   
+        }
     
+      }
+    })
+      
+      if(localStorage.getItem(3)===null){   // pregunta si hay algo en el local storage
+
+        userStorage.push(persona);
+        userStorageJson = JSON.stringify(userStorage);
+        localStorage.setItem(3,userStorageJson);   
+      }
+      else{
+        userStorage = JSON.parse(localStorage.getItem(3));
+        userStorage.push(persona);
+        userStorageJson = JSON.stringify(userStorage);
+        localStorage.setItem(3,userStorageJson);   
+      }
+  
+      
+    }
   }
-}
   
   function detectarAdmin (){
     parametroEnJson = localStorage.getItem("0");
@@ -325,11 +365,6 @@ function registrar (){
     }
     function iniciar(){//agregue esta funcion porque la funcion "detectar pagina" no funciona si la ip del ordenador cambia, solo funciona con el live server
       if(document.title==='Carrito'){
-        Swal.fire(
-          'Bienvenido',
-          'Es algo divertido',
-          'success'
-        )
         detectarAdmin();
         mostrarProductos();
         recuperarCarrito();
@@ -365,5 +400,44 @@ function registrar (){
       }
     }
     function realizar_compra(){
-      window.location="Final.html";
+      
+      let timerInterval
+      Swal.fire({
+        title: 'Se esta prcesando su compra!',
+        html: 'Espera <b></b> unidades temporales.',
+        timer: 10000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          const b = Swal.getHtmlContainer().querySelector('b')
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft()
+          }, 100)
+        },
+        willClose: () => {
+          setTimeout(()=> alert("eso es trampa!"),500);
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          window.location="Final.html";
+        console.log('I was closed by the timer')
+  }
+})
+    }
+
+   async function traerAdminsJson () {
+      urlJson = (`./js/data.json`);
+      try{
+        debugger
+        const resultado = await fetch(urlJson);
+        const respuesta = await resultado.json();
+        console.log(respuesta) ;
+        localStorage.setItem(3, JSON.stringify(respuesta));
+      }
+      catch (respuesta){
+        return respuesta
+      }
+
     }
