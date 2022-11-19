@@ -137,7 +137,15 @@ body div ul li{
 }
 
 
-
+.final{
+    border: 1px black solid;
+    color: white;
+    background-color: aquamarine;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
 
 
 
